@@ -1,0 +1,25 @@
+// Define a subquery to extract logged on users from DeviceInfo table, parsing the JSON data
+let loggedOnUsers = DeviceInfo
+    | extend data=parse_json(LoggedOnUsers) // Parse the LoggedOnUsers JSON data
+    | mv-expand data // Expand the JSON array to rows
+    | extend userName = tostring(data.UserName) // Extract the userName from the parsed JSON
+    | project userName, DeviceId, Timestamp; // Project the necessary columns
+
+// Query DeviceEvents for PnP (Plug and Play) device connections
+DeviceEvents
+| where ActionType == 'PnpDeviceConnected' // Filter events for PnP device connections
+| extend PNP = parse_json(AdditionalFields) // Parse AdditionalFields to extract PnP device details
+| extend ClassName = tostring(PNP.ClassName), PnPDeviceId = tostring(PNP.DeviceId), DeviceDescription = tostring(PNP.DeviceDescription), VendorId = tostring(PNP.VendorIds) // Extract relevant details from the parsed JSON
+| where PnPDeviceId startswith 'USBSTOR\\' // Filter for USB storage devices
+| project Timestamp, DeviceName, DeviceId, ClassName, DeviceDescription, PnPDeviceId, VendorId // Project relevant fields
+| join kind=inner (loggedOnUsers) on DeviceId // Join with the loggedOnUsers subquery based on DeviceId
+| summarize arg_max(Timestamp, *) by DeviceId // Summarize to get the latest event per device
+| project-away DeviceId1; // Remove the duplicated DeviceId column from the result
+
+// Query DeviceEvents for actions triggered by removable storage policies
+DeviceEvents
+| where ActionType == "RemovableStoragePolicyTriggered" // Filter events for removable storage policy triggers
+| extend parsed=parse_json(AdditionalFields) // Parse AdditionalFields to extract policy trigger details
+| extend RemovableStorageAccess = tostring(parsed.RemovableStorageAccess), RemovableStoragePolicyVerdict = tostring(parsed.RemovableStoragePolicyVerdict), MediaBusType = tostring(parsed.BusType), MediaClassGuid = tostring(parsed.ClassGuid), MediaClassName = tostring(parsed.ClassName), MediaDeviceId = tostring(parsed.DeviceId), MediaInstanceId = tostring(parsed.DeviceInstanceId), MediaName = tostring(parsed.MediaName), RemovableStoragePolicy = tostring(parsed.RemovableStoragePolicy), MediaProductId = tostring(parsed.ProductId), MediaVendorId = tostring(parsed.VendorId), MediaSerialNumber = tostring(parsed.SerialNumber) // Extract detailed information from the parsed JSON
+| project Timestamp, DeviceId, DeviceName, InitiatingProcessAccountName, ActionType, RemovableStorageAccess, RemovableStoragePolicyVerdict, MediaBusType, MediaClassGuid, MediaClassName, MediaDeviceId, MediaInstanceId, MediaName, RemovableStoragePolicy, MediaProductId, MediaVendorId, MediaSerialNumber // Project relevant fields
+| order by Timestamp desc; // Order the results by Timestamp in descending order

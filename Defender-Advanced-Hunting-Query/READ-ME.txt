@@ -1,0 +1,28 @@
+Purpose: This query correlates logged-on users with connected USB devices.
+Query File: logged_on_users_and_usb_devices.kql
+Usage: Run this query in Microsoft Defender for Endpoint's Advanced Hunting to identify users associated with USB device connections.
+kusto
+Copy code
+// ... (Include the query with comments here)
+Enforcement of Removable Storage Policies
+
+Purpose: This query tracks events triggered by removable storage policies.
+Query File: removable_storage_policy_enforcement.kql
+Usage: Execute this query in Advanced Hunting to monitor actions related to removable storage policy enforcement.
+kusto
+Copy code
+// ... (Include the query with comments here)
+How to Use
+Prerequisites
+
+Ensure you have access to Microsoft Defender for Endpoint.
+Familiarize yourself with Advanced Hunting in Defender for Endpoint.
+Running Queries
+
+Copy the desired query from the README or query files.
+Open Microsoft Defender for Endpoint's Advanced Hunting.
+Paste and run the query.
+Notes
+These queries are designed for tracking specific security events related to USB devices and removable storage policy enforcement. Ensure your environment aligns with the assumptions made in the queries.
+Always review and understand the queries before running them in a production environment.
+Adjustments may be needed based on your Defender for Endpoint configuration and schema.
