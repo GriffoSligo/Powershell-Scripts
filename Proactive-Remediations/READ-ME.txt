@@ -1,0 +1,50 @@
+# Toast Notification Script
+This PowerShell script creates and displays a toast notification on Windows, reminding users to restart their computer. The script includes a countdown mechanism and provides information about the last restart.
+
+## Prerequisites
+
+- PowerShell version 5.1 or later
+- Windows operating system
+
+
+powershell
+.\Toast-Notification-Script.ps1
+
+
+## Features
+
+- **Customizable Notification:**
+  - Modify notification content, images, and scenario according to your needs.
+- **Automatic Restart:**
+  - The script schedules an automatic restart after a specified duration.
+
+## Configuration
+
+- **Image URIs:**
+  - Update the `$LogoImageUri` and `$HeroImageUri` variables with the appropriate image URIs.
+- **Notification Content:**
+  - Customize the variables like `$AttributionText`, `$HeaderText`, `$TitleText`, `$BodyText1`, `$BodyText2`, and `$BodyText3` for your notification content.
+- **Automatic Restart:**
+  - Adjust the delay in seconds for automatic restart by modifying the `-t` parameter in the `shutdown` command.
+
+## Action
+
+- The script includes an action that triggers a system command for dismissing the notification.
+
+## Troubleshooting
+
+- If the notification does not display, check that the script is running with the appropriate user permissions.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Acknowledgments
+
+- Inspired by the need for a simple restart reminder on Windows systems.
+
+Feel free to contribute or open issues!
+
+---
+
+You can customize this template further based on your specific needs and add any additional sections that might be relevant to your users.
